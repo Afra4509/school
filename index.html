@@ -146,7 +146,8 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs4qWmtgs4fhOVQVZ5KysrRcK6sPFlaUkXcG1zjJnH8kwmXgZnbfUQQmwqXazRWus5Aw/exec";
+    // ✅ URL Apps Script terbaru
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwgI9wo4Y0x3h8EzzrRXyIRZHCMsz_Ph-wF_k7Kax0DRMh2RPzM8C3_1QqGJ0m1n23DQ/exec";
 
     const today = new Date();
     document.getElementById("tanggal").valueAsDate = today;
@@ -185,7 +186,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="loading-spinner"></span> Mengirim...';
 
-      // ✅ Kirim sebagai URL parameter via GET (paling kompatibel dengan Apps Script)
+      // ✅ Kirim via GET parameter (paling kompatibel dengan Apps Script)
       const params = new URLSearchParams({ nama, kelas, tanggal, status, alasan, jam });
       const url = APPS_SCRIPT_URL + "?" + params.toString();
 
