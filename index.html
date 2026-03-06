@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello Student!</h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html><!DOCTYPE html>
+<html>
+<head>
+<title>Absensi Kelas</title>
+
+<style>
+body{
+font-family: Arial;
+background: linear-gradient(135deg,#c3ecff,#f5d0ff);
+text-align:center;
+padding:40px;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:15px;
+width:350px;
+margin:auto;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+input,select,button{
+width:90%;
+padding:10px;
+margin:8px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+background:#6c63ff;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#4f47d6;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Absensi Siswa</h2>
+
+<form id="absenForm">
+
+<input type="text" id="nama" placeholder="Nama Siswa" required>
+
+<input type="text" id="kelas" placeholder="Kelas" required>
+
+<input type="date" id="tanggal" required>
+
+<select id="status">
+<option value="">Pilih Kehadiran</option>
+<option value="Hadir">Hadir</option>
+<option value="Tidak Hadir">Tidak Hadir</option>
+</select>
+
+<input type="text" id="alasan" placeholder="Alasan jika tidak hadir">
+
+<button type="submit">Kirim Absensi</button>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("absenForm").addEventListener("submit", function(e){
+
+e.preventDefault();
+
+let nama = document.getElementById("nama").value;
+let kelas = document.getElementById("kelas").value;
+let tanggal = document.getElementById("tanggal").value;
+let status = document.getElementById("status").value;
+let alasan = document.getElementById("alasan").value;
+
+let jam = new Date().toLocaleTimeString();
+
+fetch("", {
+method: "POST",
+body: JSON.stringify({
+nama: nama,
+kelas: kelas,
+tanggal: tanggal,
+status: status,
+alasan: alasan,
+jam: jam
+})
+})
+
+alert("Absensi berhasil dikirim");
+
+window.location.reload();
+
+});
+
+</script>
+
+</body>
+</html>
