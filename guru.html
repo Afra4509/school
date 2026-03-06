@@ -713,6 +713,11 @@
     document.getElementById("filterDate").addEventListener("change", loadData);
     document.getElementById("filterKelas").addEventListener("change", loadData);
 
+    // ── Expose functions called from onclick attributes ──
+    window.doLogin  = doLogin;
+    window.doLogout = doLogout;
+    window.loadData = loadData;
+
     // ── Auto-check session ──
     if (sessionStorage.getItem("guruAuth") === "1") {
       document.getElementById("loginPage").style.display = "none";
