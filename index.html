@@ -279,8 +279,8 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ✅ URL Apps Script (gunakan /exec untuk production, /dev untuk testing)
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZnjHYNmisJlJqjsxnXTBmGtfYoODFbdDiRK348NzT/exec";
+    // ✅ URL Apps Script (sudah diupdate)
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs4qWmtgs4fhOVQVZ5KysrRcK6sPFlaUkXcG1zjJnH8kwmXgZnbfUQQmwqXazRWus5Aw/exec";
 
     // Set today's date
     const today = new Date();
@@ -329,7 +329,7 @@
       try {
         await fetch(APPS_SCRIPT_URL, {
           method: "POST",
-          mode: "no-cors",   // ← wajib untuk Apps Script cross-origin
+          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
