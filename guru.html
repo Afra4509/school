@@ -6,8 +6,8 @@
   <title>Dashboard Guru — SMADA</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="config.js" defer></script>
   <style>
     :root {
       --primary: #6c63ff;
@@ -514,7 +514,14 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  document.addEventListener('DOMContentLoaded', function() {
+    // ── Init Supabase ──
+    let supabase = null;
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) {
+      console.warn("Supabase init failed:", e.message);
+    }
 
     let allData = [];
     let activeStatusFilter = "";
@@ -586,7 +593,10 @@
     // ── Init Dashboard ──
     function initDashboard() {
       const today = new Date();
-      document.getElementById("filterDate").valueAsDate = today;
+      const yy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      document.getElementById("filterDate").value = `${yy}-${mm}-${dd}`;
       document.getElementById("dashDateLabel").textContent =
         today.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
       loadData();
@@ -704,13 +714,13 @@
     document.getElementById("filterKelas").addEventListener("change", loadData);
 
     // ── Auto-check session ──
-    window.addEventListener("DOMContentLoaded", () => {
-      if (sessionStorage.getItem("guruAuth") === "1") {
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("dashboardPage").classList.add("show");
-        initDashboard();
-      }
-    });
+    if (sessionStorage.getItem("guruAuth") === "1") {
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("dashboardPage").classList.add("show");
+      initDashboard();
+    }
+
+  }); // end DOMContentLoaded
   </script>
 </body>
 </html>
