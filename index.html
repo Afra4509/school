@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard Guru — SMADA</title>
+  <title>Absensi Digital — SMADA</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -35,14 +35,17 @@
       background: var(--bg-dark);
       color: var(--text-primary);
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
+    /* ── BACKGROUND BLOBS ── */
     .bg-blob {
       position: fixed; pointer-events: none; z-index: 0;
-      border-radius: 50%; filter: blur(80px); opacity: 0.12;
+      border-radius: 50%; filter: blur(80px); opacity: 0.15;
     }
-    .bg-blob-1 { width: 500px; height: 500px; background: var(--primary); top: -150px; right: -150px; }
-    .bg-blob-2 { width: 350px; height: 350px; background: var(--secondary); bottom: -80px; left: -80px; }
+    .bg-blob-1 { width: 500px; height: 500px; background: var(--primary); top: -150px; left: -150px; }
+    .bg-blob-2 { width: 400px; height: 400px; background: var(--secondary); bottom: -100px; right: -100px; }
+    .bg-blob-3 { width: 300px; height: 300px; background: var(--accent); top: 50%; left: 50%; transform: translate(-50%,-50%); }
 
     /* ── NAVBAR ── */
     nav {
@@ -53,98 +56,206 @@
       padding: 0 24px; height: 64px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text-primary);
+    }
     .nav-brand .logo-icon {
       width: 36px; height: 36px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 10px; display: grid; place-items: center; font-size: 16px;
+      border-radius: 10px; display: grid; place-items: center;
+      font-size: 16px;
     }
     .nav-brand span { font-weight: 700; font-size: 16px; }
     .nav-brand span small { display: block; font-size: 10px; font-weight: 400; color: var(--text-secondary); }
+
     .nav-links { display: flex; align-items: center; gap: 8px; }
     .nav-link {
       display: flex; align-items: center; gap: 8px;
       padding: 8px 16px; border-radius: 10px;
       text-decoration: none; color: var(--text-secondary);
-      font-size: 14px; font-weight: 500; transition: all 0.2s;
+      font-size: 14px; font-weight: 500;
+      transition: all 0.2s;
     }
     .nav-link:hover { background: var(--bg-glass); color: var(--text-primary); }
-    .nav-link.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-link.active { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
     .nav-link i { font-size: 14px; }
 
-    /* ── LOGIN PAGE ── */
-    #loginPage {
-      position: relative; z-index: 1; min-height: calc(100vh - 64px);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px;
+    /* ── PAGE ── */
+    .page { position: relative; z-index: 1; min-height: calc(100vh - 64px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+
+    /* ── HERO ── */
+    .hero { text-align: center; margin-bottom: 40px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
+      color: var(--primary-light); padding: 6px 16px; border-radius: 50px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 16px;
     }
-    .login-hero { text-align: center; margin-bottom: 36px; }
-    .login-hero .shield { font-size: 52px; margin-bottom: 12px; display: block; }
-    .login-hero h1 {
-      font-size: 28px; font-weight: 800;
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 42px); font-weight: 800; line-height: 1.2;
       background: linear-gradient(135deg, #fff 30%, var(--primary-light));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .login-hero p { color: var(--text-secondary); font-size: 14px; margin-top: 6px; }
+    .hero p { color: var(--text-secondary); font-size: 15px; margin-top: 10px; }
 
-    .login-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 24px; padding: 40px 36px;
-      width: 100%; max-width: 400px; box-shadow: var(--shadow);
+    /* ── DATE BADGE ── */
+    .date-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg-glass); border: 1px solid var(--border);
+      backdrop-filter: blur(10px); border-radius: 50px;
+      padding: 8px 20px; font-size: 13px; color: var(--text-secondary); font-weight: 500;
+      margin-bottom: 28px;
+    }
+    .date-pill i { color: var(--primary-light); }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px;
+      width: 100%; max-width: 480px;
+      box-shadow: var(--shadow);
       position: relative; overflow: hidden;
     }
-    .login-card::before {
+    .card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--primary), var(--secondary));
     }
 
-    .form-group { margin-bottom: 18px; }
+    /* ── FORM ── */
+    .form-grid { display: grid; gap: 18px; }
+
+    .form-group { position: relative; }
     .form-label {
       display: flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700; color: var(--text-secondary);
-      margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
     }
+    .form-label i { font-size: 11px; color: var(--primary-light); }
+    .required { color: var(--secondary); margin-left: 2px; }
+
     .input-wrapper { position: relative; }
-    .input-wrapper input {
-      width: 100%; background: rgba(255,255,255,0.04); border: 1.5px solid var(--border);
-      border-radius: 12px; padding: 13px 16px 13px 44px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--text-primary);
-      transition: all 0.25s; outline: none;
-    }
-    .input-wrapper input::placeholder { color: rgba(160,160,192,0.5); }
-    .input-wrapper input:focus {
-      border-color: var(--primary); background: rgba(108,99,255,0.06);
-      box-shadow: 0 0 0 4px rgba(108,99,255,0.12);
-    }
-    .input-icon {
+    .input-wrapper .input-icon {
       position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
       color: var(--text-secondary); font-size: 15px; pointer-events: none;
-    }
-    .toggle-pw {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--text-secondary); cursor: pointer; font-size: 14px;
       transition: color 0.2s;
     }
-    .toggle-pw:hover { color: var(--primary-light); }
 
-    .login-error {
-      background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3);
-      color: #ffb3b3; padding: 12px 16px; border-radius: 10px;
-      font-size: 13px; margin-bottom: 16px; display: none;
-      align-items: center; gap: 8px;
+    input, select, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px 13px 44px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; color: var(--text-primary);
+      transition: all 0.25s; outline: none;
+      -webkit-appearance: none; appearance: none;
     }
-    .login-error.show { display: flex; animation: shake 0.4s ease; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    input::placeholder, textarea::placeholder { color: rgba(160,160,192,0.5); }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      background: rgba(108,99,255,0.06);
+      box-shadow: 0 0 0 4px rgba(108,99,255,0.12);
+    }
+    input:focus ~ .input-icon, select:focus ~ .input-icon { color: var(--primary-light); }
+    .input-wrapper input:focus + .input-icon,
+    .input-wrapper select:focus + .input-icon { color: var(--primary-light); }
 
-    .btn-login {
+    /* Fix: icon before input */
+    .input-wrapper input, .input-wrapper select { padding-left: 44px; }
+
+    select option { background: #1a1a2e; color: var(--text-primary); }
+
+    .alasan-group { display: none; }
+    .alasan-group.visible { display: block; animation: fadeSlide 0.25s ease; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── STATUS PILLS ── */
+    .status-pills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .status-pill {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      padding: 18px 8px; border-radius: 14px;
+      border: 1.5px solid var(--border); cursor: pointer;
+      background: rgba(255,255,255,0.02);
+      transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--text-secondary); user-select: none;
+      outline: none; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .status-pill .pill-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: grid; place-items: center;
+      font-size: 18px;
+      background: rgba(255,255,255,0.06);
+      transition: all 0.22s;
+    }
+    .status-pill:hover {
+      border-color: rgba(255,255,255,0.25); color: white;
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .status-pill:active { transform: translateY(-1px); }
+
+    .status-pill.selected-hadir {
+      border-color: var(--accent); background: rgba(67,233,123,0.1);
+      color: var(--accent); box-shadow: 0 6px 20px rgba(67,233,123,0.25);
+      transform: translateY(-3px);
+    }
+    .status-pill.selected-hadir .pill-icon { background: rgba(67,233,123,0.2); color: var(--accent); }
+
+    .status-pill.selected-izin {
+      border-color: var(--warning); background: rgba(255,217,61,0.1);
+      color: var(--warning); box-shadow: 0 6px 20px rgba(255,217,61,0.25);
+      transform: translateY(-3px);
+    }
+    .status-pill.selected-izin .pill-icon { background: rgba(255,217,61,0.2); color: var(--warning); }
+
+    .status-pill.selected-sakit {
+      border-color: var(--secondary); background: rgba(255,101,132,0.1);
+      color: var(--secondary); box-shadow: 0 6px 20px rgba(255,101,132,0.25);
+      transform: translateY(-3px);
+    }
+    .status-pill.selected-sakit .pill-icon { background: rgba(255,101,132,0.2); color: var(--secondary); }
+
+    .status-pill.selected-absen {
+      border-color: #777; background: rgba(136,136,136,0.1);
+      color: #bbb; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      transform: translateY(-3px);
+    }
+    .status-pill.selected-absen .pill-icon { background: rgba(136,136,136,0.2); color: #bbb; }
+
+    /* ── DIVIDER ── */
+    .divider { display: flex; align-items: center; gap: 12px; margin: 4px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .divider span { font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
+
+    /* ── BUTTON ── */
+    .btn-submit {
       width: 100%; padding: 15px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white; border: none; border-radius: 14px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: all 0.25s; margin-top: 4px;
     }
-    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108,99,255,0.5); }
-    .btn-login:active { transform: translateY(0); }
-    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-submit::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108,99,255,0.5); }
+    .btn-submit:hover::after { opacity: 1; }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
     .spinner {
       display: inline-block; width: 16px; height: 16px;
       border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
@@ -153,201 +264,70 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── DASHBOARD ── */
-    #dashboardPage { display: none; position: relative; z-index: 1; min-height: calc(100vh - 64px); padding: 32px 24px 60px; }
-    #dashboardPage.show { display: block; animation: fadeUp 0.4s ease; }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-
-    /* Dashboard Header */
-    .dash-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
-    .dash-title h1 { font-size: 22px; font-weight: 800; }
-    .dash-title p { color: var(--text-secondary); font-size: 13px; margin-top: 2px; }
-    .btn-logout {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 18px; background: rgba(255,107,107,0.1);
-      border: 1px solid rgba(255,107,107,0.3); color: #ffb3b3;
-      border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-logout:hover { background: rgba(255,107,107,0.2); }
-
-    /* Stats */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .stat-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 20px; position: relative; overflow: hidden;
-      transition: transform 0.2s;
-    }
-    .stat-card:hover { transform: translateY(-3px); }
-    .stat-card .stat-icon {
-      font-size: 28px; margin-bottom: 8px; display: block;
-    }
-    .stat-card .stat-val { font-size: 32px; font-weight: 800; line-height: 1; }
-    .stat-card .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-weight: 600; text-transform: uppercase; }
-    .stat-card.hadir { border-color: rgba(67,233,123,0.3); }
-    .stat-card.hadir .stat-val { color: var(--accent); }
-    .stat-card.izin { border-color: rgba(255,217,61,0.3); }
-    .stat-card.izin .stat-val { color: var(--warning); }
-    .stat-card.sakit { border-color: rgba(255,101,132,0.3); }
-    .stat-card.sakit .stat-val { color: var(--secondary); }
-    .stat-card.alpha { border-color: rgba(160,160,192,0.2); }
-    .stat-card.alpha .stat-val { color: var(--text-secondary); }
-    .stat-card.total .stat-val { color: var(--primary-light); }
-
-    /* Controls */
-    .controls {
-      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 16px 20px; margin-bottom: 20px;
-    }
-    .controls .ctrl-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .ctrl-group { display: flex; align-items: center; gap: 8px; }
-    .ctrl-group select, .ctrl-group input[type="date"] {
-      background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 8px 32px 8px 12px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-primary);
-      outline: none; cursor: pointer; transition: all 0.2s;
-      -webkit-appearance: none; appearance: none;
-    }
-    .ctrl-group select:focus, .ctrl-group input[type="date"]:focus {
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
-    }
-    .select-wrapper { position: relative; }
-    .select-wrapper::after {
-      content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      font-size: 10px; color: var(--text-secondary); pointer-events: none;
-    }
-    .btn-refresh {
-      display: flex; align-items: center; gap: 6px;
-      padding: 8px 16px; background: rgba(108,99,255,0.1);
-      border: 1px solid rgba(108,99,255,0.3); color: var(--primary-light);
-      border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s; margin-left: auto;
-    }
-    .btn-refresh:hover { background: rgba(108,99,255,0.2); }
-    .btn-refresh.spinning i { animation: spin 0.7s linear infinite; }
-
-    /* Filter Tabs */
-    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-    .filter-tab {
-      padding: 8px 18px; border-radius: 50px;
-      border: 1.5px solid var(--border);
-      font-family: inherit; font-size: 13px; font-weight: 600;
-      color: var(--text-secondary); background: transparent; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-tab:hover { border-color: rgba(255,255,255,0.2); color: white; }
-    .filter-tab.active-all { border-color: var(--primary); background: rgba(108,99,255,0.15); color: var(--primary-light); }
-    .filter-tab.active-hadir { border-color: var(--accent); background: rgba(67,233,123,0.12); color: var(--accent); }
-    .filter-tab.active-izin { border-color: var(--warning); background: rgba(255,217,61,0.12); color: var(--warning); }
-    .filter-tab.active-sakit { border-color: var(--secondary); background: rgba(255,101,132,0.12); color: var(--secondary); }
-    .filter-tab.active-alpha { border-color: #888; background: rgba(136,136,136,0.1); color: #aaa; }
-
-    /* Table */
-    .table-wrapper {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; box-shadow: var(--shadow);
-    }
-    .table-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
-    }
-    .table-header h3 { font-size: 15px; font-weight: 700; }
-    .table-header .record-count { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-
-    .table-scroll { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 600px; }
-    thead tr { background: rgba(255,255,255,0.02); }
-    th {
-      padding: 14px 16px; text-align: left; font-size: 11px;
-      font-weight: 700; color: var(--text-secondary);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      border-bottom: 1px solid var(--border); white-space: nowrap;
-    }
-    tbody tr { transition: background 0.15s; cursor: default; }
-    tbody tr:hover { background: rgba(255,255,255,0.03); }
-    tbody tr:not(:last-child) td { border-bottom: 1px solid rgba(255,255,255,0.04); }
-    td { padding: 14px 16px; font-size: 14px; vertical-align: middle; }
-
-    .td-nama { font-weight: 600; }
-    .td-kelas {
-      display: inline-flex; padding: 4px 10px;
-      background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.25);
-      color: var(--primary-light); border-radius: 50px; font-size: 12px; font-weight: 600;
-    }
-    .td-jam { color: var(--text-secondary); font-size: 13px; font-variant-numeric: tabular-nums; }
-    .td-alasan { color: var(--text-secondary); font-size: 13px; font-style: italic; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    .badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 700;
-      white-space: nowrap;
-    }
-    .badge-hadir { background: rgba(67,233,123,0.12); border: 1px solid rgba(67,233,123,0.3); color: var(--accent); }
-    .badge-izin  { background: rgba(255,217,61,0.12);  border: 1px solid rgba(255,217,61,0.3);  color: var(--warning); }
-    .badge-sakit { background: rgba(255,101,132,0.12); border: 1px solid rgba(255,101,132,0.3); color: var(--secondary); }
-    .badge-alpha { background: rgba(160,160,192,0.08); border: 1px solid rgba(160,160,192,0.2); color: #888; }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center; padding: 60px 20px; color: var(--text-secondary);
-    }
-    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-    .empty-state p { font-size: 15px; }
-    .empty-state small { font-size: 13px; opacity: 0.7; }
-
-    /* Loading state */
-    .table-loading {
-      text-align: center; padding: 50px 20px; color: var(--text-secondary);
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-    }
-    .table-loading .big-spinner {
-      width: 36px; height: 36px; border-width: 3px;
-      border-color: rgba(108,99,255,0.2); border-top-color: var(--primary);
-      border-style: solid; border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
-
-    /* Search bar */
-    .search-wrapper { position: relative; }
-    .search-wrapper input {
-      background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 8px 12px 8px 36px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: var(--text-primary);
-      outline: none; transition: all 0.2s; width: 200px;
-    }
-    .search-wrapper input::placeholder { color: rgba(160,160,192,0.5); }
-    .search-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,99,255,0.12); width: 240px; }
-    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 13px; }
-
-    /* toast */
+    /* ── TOAST ── */
     .toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
     .toast {
       display: flex; align-items: center; gap: 12px;
-      padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 600;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4); animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
-      backdrop-filter: blur(10px); max-width: 340px;
+      padding: 14px 20px; border-radius: 14px;
+      font-size: 14px; font-weight: 600; max-width: 360px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      backdrop-filter: blur(10px);
     }
     .toast.success { background: rgba(67,233,123,0.15); border: 1px solid rgba(67,233,123,0.3); color: #a0ffc0; }
     .toast.error   { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ffb3b3; }
-    @keyframes toastIn { from{ opacity:0; transform:translateX(60px) scale(0.85); } to{ opacity:1; transform:translateX(0) scale(1); } }
+    .toast.info    { background: rgba(108,99,255,0.15);  border: 1px solid rgba(108,99,255,0.3);  color: #c0baff; }
+    .toast i { font-size: 16px; }
+    @keyframes toastIn { from { opacity:0; transform: translateX(60px) scale(0.85); } to { opacity:1; transform: translateX(0) scale(1); } }
     .toast.hiding { animation: toastOut 0.3s ease forwards; }
-    @keyframes toastOut { to{ opacity:0; transform:translateX(60px); } }
+    @keyframes toastOut { to { opacity:0; transform: translateX(60px); } }
 
-    @media (max-width: 640px) {
-      .controls { flex-direction: column; align-items: stretch; }
-      .btn-refresh { margin-left: 0; justify-content: center; }
-      .search-wrapper input { width: 100%; }
-      .search-wrapper input:focus { width: 100%; }
-      #dashboardPage { padding: 20px 12px 60px; }
-      .login-card { padding: 28px 20px; }
-      .stats-grid { grid-template-columns: repeat(2,1fr); }
+    /* ── FOOTER ── */
+    footer { text-align: center; padding: 20px; color: var(--text-secondary); font-size: 12px; position: relative; z-index: 1; }
+    footer a { color: var(--primary-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SUCCESS OVERLAY ── */
+    .success-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9998;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .success-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 40px;
+      text-align: center; max-width: 360px; width: 90%;
+      box-shadow: var(--shadow);
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-icon { font-size: 64px; margin-bottom: 16px; animation: bounce 0.6s ease 0.2s; }
+    @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+    .success-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .success-card p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+    .btn-close-success {
+      padding: 12px 32px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; border: none; font-family: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-close-success:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(108,99,255,0.4); }
+
+    @media (max-width: 480px) {
+      .card { padding: 24px 18px; border-radius: 20px; }
+      .status-pills { grid-template-columns: repeat(2, 1fr); }
+      .toast-container { bottom: 16px; right: 16px; left: 16px; align-items: stretch; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Background Blobs -->
   <div class="bg-blob bg-blob-1"></div>
   <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-blob bg-blob-3"></div>
 
   <!-- Navbar -->
   <nav>
@@ -356,161 +336,135 @@
       <span>SMADA<small>Sistem Absensi Digital</small></span>
     </a>
     <div class="nav-links">
-      <a href="index.html" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Absensi</a>
-      <a href="guru.html" class="nav-link active"><i class="fa-solid fa-chalkboard-user"></i> Dashboard Guru</a>
+      <a href="index.html" class="nav-link active"><i class="fa-solid fa-clipboard-check"></i> Absensi</a>
+      <a href="guru.html" class="nav-link"><i class="fa-solid fa-chalkboard-user"></i> Dashboard Guru</a>
     </div>
   </nav>
 
-  <!-- ══════════ LOGIN PAGE ══════════ -->
-  <div id="loginPage">
-    <div class="login-hero">
-      <span class="shield">🔐</span>
-      <h1>Masuk sebagai Guru</h1>
-      <p>Halaman ini khusus untuk guru dan staf SMADA</p>
+  <!-- Main Page -->
+  <div class="page">
+    <div class="hero">
+      <div class="hero-badge"><i class="fa-solid fa-circle-check"></i> Sistem Aktif</div>
+      <h1>Absensi Kelas Digital</h1>
+      <p>Catat kehadiran siswa dengan cepat dan mudah</p>
     </div>
 
-    <div class="login-card">
-      <div class="login-error" id="loginError">
-        <i class="fa-solid fa-circle-xmark"></i>
-        <span id="loginErrorMsg">Username atau password salah.</span>
-      </div>
-
-      <div class="form-group">
-        <div class="form-label"><i class="fa-solid fa-user-shield"></i> Username</div>
-        <div class="input-wrapper">
-          <input type="text" id="loginUser" placeholder="Masukkan username" autocomplete="username"/>
-          <i class="input-icon fa-solid fa-user"></i>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="form-label"><i class="fa-solid fa-lock"></i> Password</div>
-        <div class="input-wrapper">
-          <input type="password" id="loginPass" placeholder="Masukkan password" autocomplete="current-password"/>
-          <i class="input-icon fa-solid fa-lock"></i>
-          <i class="toggle-pw fa-solid fa-eye" id="togglePw"></i>
-        </div>
-      </div>
-
-      <button class="btn-login" id="loginBtn">
-        <i class="fa-solid fa-right-to-bracket"></i> Masuk
-      </button>
-    </div>
-  </div>
-
-  <!-- ══════════ DASHBOARD PAGE ══════════ -->
-  <div id="dashboardPage">
-
-    <!-- Header -->
-    <div class="dash-header">
-      <div class="dash-title">
-        <h1>📊 Dashboard Absensi</h1>
-        <p id="dashDateLabel">Memuat data...</p>
-      </div>
-      <button class="btn-logout" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Keluar
-      </button>
+    <div class="date-pill" id="datePill">
+      <i class="fa-regular fa-calendar"></i>
+      <span id="dateText">Memuat tanggal...</span>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-grid" id="statsGrid">
-      <div class="stat-card total">
-        <span class="stat-icon">📋</span>
-        <div class="stat-val" id="statTotal">—</div>
-        <div class="stat-label">Total Siswa</div>
-      </div>
-      <div class="stat-card hadir">
-        <span class="stat-icon">✅</span>
-        <div class="stat-val" id="statHadir">—</div>
-        <div class="stat-label">Hadir</div>
-      </div>
-      <div class="stat-card izin">
-        <span class="stat-icon">📝</span>
-        <div class="stat-val" id="statIzin">—</div>
-        <div class="stat-label">Izin</div>
-      </div>
-      <div class="stat-card sakit">
-        <span class="stat-icon">🤒</span>
-        <div class="stat-val" id="statSakit">—</div>
-        <div class="stat-label">Sakit</div>
-      </div>
-      <div class="stat-card alpha">
-        <span class="stat-icon">❌</span>
-        <div class="stat-val" id="statAlpha">—</div>
-        <div class="stat-label">Alpha</div>
-      </div>
-    </div>
+    <div class="card">
+      <form id="absenForm" novalidate>
+        <div class="form-grid">
 
-    <!-- Controls -->
-    <div class="controls">
-      <span class="ctrl-label">Filter:</span>
-      <div class="ctrl-group">
-        <i class="fa-regular fa-calendar" style="color:var(--text-secondary);font-size:13px;"></i>
-        <input type="date" id="filterDate"/>
-      </div>
-      <div class="ctrl-group">
-        <div class="select-wrapper">
-          <select id="filterKelas">
-            <option value="">Semua Kelas</option>
-            <optgroup label="Kelas X">
-              <option>X RPL 1</option><option>X RPL 2</option>
-              <option>X TKJ 1</option><option>X TKJ 2</option>
-              <option>X AKL 1</option><option>X AKL 2</option>
-              <option>X MPLB 1</option><option>X MPLB 2</option>
-              <option>X PM 1</option><option>X PM 2</option>
-            </optgroup>
-            <optgroup label="Kelas XI">
-              <option>XI RPL 1</option><option>XI RPL 2</option>
-              <option>XI TKJ 1</option><option>XI TKJ 2</option>
-              <option>XI AKL 1</option><option>XI AKL 2</option>
-              <option>XI MPLB 1</option><option>XI MPLB 2</option>
-              <option>XI PM 1</option><option>XI PM 2</option>
-            </optgroup>
-            <optgroup label="Kelas XII">
-              <option>XII RPL 1</option><option>XII RPL 2</option>
-              <option>XII TKJ 1</option><option>XII TKJ 2</option>
-              <option>XII AKL 1</option><option>XII AKL 2</option>
-              <option>XII MPLB 1</option><option>XII MPLB 2</option>
-              <option>XII PM 1</option><option>XII PM 2</option>
-            </optgroup>
-          </select>
-        </div>
-      </div>
-      <div class="search-wrapper">
-        <i class="search-icon fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari nama siswa..."/>
-      </div>
-      <button class="btn-refresh" id="refreshBtn">
-        <i class="fa-solid fa-rotate-right"></i> Refresh
-      </button>
-    </div>
-
-    <!-- Filter Tabs -->
-    <div class="filter-tabs" id="filterTabs">
-      <button class="filter-tab active-all" data-status="">Semua</button>
-      <button class="filter-tab" data-status="Hadir">✅ Hadir</button>
-      <button class="filter-tab" data-status="Izin">📝 Izin</button>
-      <button class="filter-tab" data-status="Sakit">🤒 Sakit</button>
-      <button class="filter-tab" data-status="Tidak Hadir">❌ Alpha</button>
-    </div>
-
-    <!-- Table -->
-    <div class="table-wrapper">
-      <div class="table-header">
-        <h3>Data Kehadiran</h3>
-        <span class="record-count" id="recordCount">0 data</span>
-      </div>
-      <div class="table-scroll">
-        <div id="tableBody">
-          <div class="table-loading">
-            <div class="big-spinner"></div>
-            <span>Memuat data...</span>
+          <!-- Nama -->
+          <div class="form-group">
+            <div class="form-label"><i class="fa-solid fa-user"></i> Nama Siswa <span class="required">*</span></div>
+            <div class="input-wrapper">
+              <input type="text" id="nama" placeholder="Masukkan nama lengkap" autocomplete="name" spellcheck="false"/>
+              <i class="input-icon fa-solid fa-user"></i>
+            </div>
           </div>
+
+          <!-- Kelas -->
+          <div class="form-group">
+            <div class="form-label"><i class="fa-solid fa-school"></i> Kelas <span class="required">*</span></div>
+            <div class="input-wrapper">
+              <select id="kelas">
+                <option value="">— Pilih Kelas —</option>
+                <optgroup label="Kelas X">
+                  <option>X RPL 1</option><option>X RPL 2</option>
+                  <option>X TKJ 1</option><option>X TKJ 2</option>
+                  <option>X AKL 1</option><option>X AKL 2</option>
+                  <option>X MPLB 1</option><option>X MPLB 2</option>
+                  <option>X PM 1</option><option>X PM 2</option>
+                </optgroup>
+                <optgroup label="Kelas XI">
+                  <option>XI RPL 1</option><option>XI RPL 2</option>
+                  <option>XI TKJ 1</option><option>XI TKJ 2</option>
+                  <option>XI AKL 1</option><option>XI AKL 2</option>
+                  <option>XI MPLB 1</option><option>XI MPLB 2</option>
+                  <option>XI PM 1</option><option>XI PM 2</option>
+                </optgroup>
+                <optgroup label="Kelas XII">
+                  <option>XII RPL 1</option><option>XII RPL 2</option>
+                  <option>XII TKJ 1</option><option>XII TKJ 2</option>
+                  <option>XII AKL 1</option><option>XII AKL 2</option>
+                  <option>XII MPLB 1</option><option>XII MPLB 2</option>
+                  <option>XII PM 1</option><option>XII PM 2</option>
+                </optgroup>
+              </select>
+              <i class="input-icon fa-solid fa-school"></i>
+            </div>
+          </div>
+
+          <!-- Tanggal -->
+          <div class="form-group">
+            <div class="form-label"><i class="fa-regular fa-calendar-days"></i> Tanggal <span class="required">*</span></div>
+            <div class="input-wrapper">
+              <input type="date" id="tanggal"/>
+              <i class="input-icon fa-regular fa-calendar-days"></i>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <div class="form-label"><i class="fa-solid fa-list-check"></i> Status Kehadiran <span class="required">*</span></div>
+            <div class="status-pills" id="statusPills">
+              <button type="button" class="status-pill" data-value="Hadir">
+                <span class="pill-icon"><i class="fa-solid fa-circle-check"></i></span>
+                <span>Hadir</span>
+              </button>
+              <button type="button" class="status-pill" data-value="Izin">
+                <span class="pill-icon"><i class="fa-solid fa-file-lines"></i></span>
+                <span>Izin</span>
+              </button>
+              <button type="button" class="status-pill" data-value="Sakit">
+                <span class="pill-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+                <span>Sakit</span>
+              </button>
+              <button type="button" class="status-pill" data-value="Tidak Hadir">
+                <span class="pill-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                <span>Alpha</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Alasan -->
+          <div class="form-group alasan-group" id="alasanGroup">
+            <div class="form-label"><i class="fa-solid fa-message"></i> Alasan / Keterangan</div>
+            <div class="input-wrapper">
+              <input type="text" id="alasan" placeholder="Tulis alasan ketidakhadiran..."/>
+              <i class="input-icon fa-solid fa-message"></i>
+            </div>
+          </div>
+
+          <div class="divider"><span>konfirmasi</span></div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Absensi
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 
+  <footer>
+    <p>Dibuat dengan ❤️ oleh Tim korikuler· <a href="guru.html">Dashboard Guru</a></p>
+  </footer>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <h2>Absensi Terkirim!</h2>
+      <p id="successMsg">Data kehadiran kamu berhasil dicatat.</p>
+      <button class="btn-close-success" id="btnCloseSuccess">Selesai</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
@@ -523,210 +477,95 @@
       console.warn("Supabase init failed:", e.message);
     }
 
-    let allData = [];
-    let activeStatusFilter = "";
+    // ── Date (local timezone) ──
+    const today = new Date();
+    const fmt = today.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+    document.getElementById("dateText").textContent = fmt;
+    const yy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    document.getElementById("tanggal").value = `${yy}-${mm}-${dd}`;
 
-    // ── Helpers ──
+    // ── Status Pills ──
+    let selectedStatus = "";
+    document.querySelectorAll(".status-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll(".status-pill").forEach(p => p.className = "status-pill");
+        selectedStatus = pill.dataset.value;
+        const map = { "Hadir":"selected-hadir", "Izin":"selected-izin", "Sakit":"selected-sakit", "Tidak Hadir":"selected-absen" };
+        pill.classList.add(map[selectedStatus] || "");
+        const needReason = ["Izin","Sakit","Tidak Hadir"].includes(selectedStatus);
+        document.getElementById("alasanGroup").classList.toggle("visible", needReason);
+      });
+    });
+
+    // ── Toast ──
     function showToast(msg, type = "success") {
-      const icons = { success:"fa-circle-check", error:"fa-circle-xmark" };
+      const icons = { success: "fa-circle-check", error: "fa-circle-xmark", info: "fa-circle-info" };
       const t = document.createElement("div");
       t.className = `toast ${type}`;
       t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
       document.getElementById("toastContainer").appendChild(t);
-      setTimeout(() => { t.classList.add("hiding"); setTimeout(()=>t.remove(),300); }, 3500);
-    }
-
-    // ── Toggle password visibility ──
-    document.getElementById("togglePw").addEventListener("click", function() {
-      const inp = document.getElementById("loginPass");
-      if (inp.type === "password") { inp.type = "text"; this.classList.replace("fa-eye","fa-eye-slash"); }
-      else { inp.type = "password"; this.classList.replace("fa-eye-slash","fa-eye"); }
-    });
-
-    // ── Enter key login ──
-    ["loginUser","loginPass"].forEach(id => {
-      document.getElementById(id).addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
-    });
-
-    // ── Login ──
-    function doLogin() {
-      const user = document.getElementById("loginUser").value.trim();
-      const pass = document.getElementById("loginPass").value;
-      const errEl = document.getElementById("loginError");
-      const btn   = document.getElementById("loginBtn");
-
-      if (!user || !pass) {
-        document.getElementById("loginErrorMsg").textContent = "Username dan password wajib diisi.";
-        errEl.classList.add("show"); return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Memverifikasi...';
-
       setTimeout(() => {
-        if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
-          sessionStorage.setItem("guruAuth", "1");
-          document.getElementById("loginPage").style.display = "none";
-          document.getElementById("dashboardPage").classList.add("show");
-          initDashboard();
-        } else {
-          document.getElementById("loginErrorMsg").textContent = "Username atau password salah!";
-          errEl.classList.remove("show");
-          void errEl.offsetWidth;
-          errEl.classList.add("show");
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
-        }
-      }, 600);
+        t.classList.add("hiding");
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
     }
 
-    // ── Logout ──
-    function doLogout() {
-      sessionStorage.removeItem("guruAuth");
-      document.getElementById("dashboardPage").classList.remove("show");
-      document.getElementById("dashboardPage").style.display = "none";
-      document.getElementById("loginPage").style.display = "";
-      document.getElementById("loginUser").value = "";
-      document.getElementById("loginPass").value = "";
+    // ── Success Overlay ──
+    function closeSuccess() {
+      document.getElementById("successOverlay").classList.remove("show");
+      document.getElementById("absenForm").reset();
+      document.querySelectorAll(".status-pill").forEach(p => p.className = "status-pill");
+      selectedStatus = "";
+      document.getElementById("alasanGroup").classList.remove("visible");
+      const n = new Date();
+      const ny = n.getFullYear(), nm = String(n.getMonth()+1).padStart(2,"0"), nd = String(n.getDate()).padStart(2,"0");
+      document.getElementById("tanggal").value = `${ny}-${nm}-${nd}`;
     }
-
-    // ── Init Dashboard ──
-    function initDashboard() {
-      const today = new Date();
-      const yy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, "0");
-      const dd = String(today.getDate()).padStart(2, "0");
-      document.getElementById("filterDate").value = `${yy}-${mm}-${dd}`;
-      document.getElementById("dashDateLabel").textContent =
-        today.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
-      loadData();
-    }
-
-    // ── Load Data ──
-    async function loadData() {
-      const btn = document.getElementById("refreshBtn");
-      btn.classList.add("spinning");
-      document.getElementById("tableBody").innerHTML =
-        `<div class="table-loading"><div class="big-spinner"></div><span>Memuat data...</span></div>`;
-
-      const date  = document.getElementById("filterDate").value;
-      const kelas = document.getElementById("filterKelas").value;
-
-      try {
-        let query = supabase.from("absensi").select("*").order("created_at", { ascending: false });
-        if (date)  query = query.eq("tanggal", date);
-        if (kelas) query = query.eq("kelas", kelas);
-
-        const { data, error } = await query;
-        if (error) throw error;
-
-        allData = data || [];
-        updateStats();
-        renderTable();
-      } catch(err) {
-        console.error(err);
-        showToast("Gagal memuat data: " + (err.message || "Error"), "error");
-        document.getElementById("tableBody").innerHTML =
-          `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Gagal memuat data</p><small>${err.message}</small></div>`;
-      } finally {
-        btn.classList.remove("spinning");
-      }
-    }
-
-    // ── Stats ──
-    function updateStats() {
-      document.getElementById("statTotal").textContent  = allData.length;
-      document.getElementById("statHadir").textContent  = allData.filter(r=>r.status==="Hadir").length;
-      document.getElementById("statIzin").textContent   = allData.filter(r=>r.status==="Izin").length;
-      document.getElementById("statSakit").textContent  = allData.filter(r=>r.status==="Sakit").length;
-      document.getElementById("statAlpha").textContent  = allData.filter(r=>r.status==="Tidak Hadir").length;
-    }
-
-    // ── Render Table ──
-    function renderTable() {
-      const search  = document.getElementById("searchInput").value.toLowerCase();
-      let filtered  = allData;
-
-      if (activeStatusFilter) filtered = filtered.filter(r => r.status === activeStatusFilter);
-      if (search) filtered = filtered.filter(r => r.nama.toLowerCase().includes(search) || r.kelas.toLowerCase().includes(search));
-
-      document.getElementById("recordCount").textContent = `${filtered.length} data`;
-
-      if (filtered.length === 0) {
-        document.getElementById("tableBody").innerHTML =
-          `<div class="empty-state"><div class="empty-icon">📭</div><p>Tidak ada data ditemukan</p><small>Coba ubah filter atau tanggal</small></div>`;
-        return;
-      }
-
-      const badgeMap = {
-        "Hadir":       '<span class="badge badge-hadir">✅ Hadir</span>',
-        "Izin":        '<span class="badge badge-izin">📝 Izin</span>',
-        "Sakit":       '<span class="badge badge-sakit">🤒 Sakit</span>',
-        "Tidak Hadir": '<span class="badge badge-alpha">❌ Alpha</span>',
-      };
-
-      const rows = filtered.map(r => {
-        const tgl = r.tanggal ? new Date(r.tanggal + "T00:00:00").toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" }) : "—";
-        return `<tr>
-          <td class="td-nama">${escHtml(r.nama)}</td>
-          <td><span class="td-kelas">${escHtml(r.kelas)}</span></td>
-          <td>${tgl}</td>
-          <td class="td-jam">${r.jam || "—"}</td>
-          <td>${badgeMap[r.status] || r.status}</td>
-          <td class="td-alasan" title="${escHtml(r.alasan||'')}"><em>${r.alasan ? escHtml(r.alasan) : '<span style="opacity:0.4">—</span>'}</em></td>
-        </tr>`;
-      }).join("");
-
-      document.getElementById("tableBody").innerHTML =
-        `<table><thead><tr>
-          <th>Nama Siswa</th><th>Kelas</th><th>Tanggal</th><th>Jam</th><th>Status</th><th>Keterangan</th>
-        </tr></thead><tbody>${rows}</tbody></table>`;
-    }
-
-    function escHtml(str) {
-      if (!str) return "";
-      return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-    }
-
-    // ── Filter tabs ──
-    document.getElementById("filterTabs").addEventListener("click", e => {
-      const btn = e.target.closest(".filter-tab");
-      if (!btn) return;
-      activeStatusFilter = btn.dataset.status;
-      document.querySelectorAll(".filter-tab").forEach(b => {
-        b.className = "filter-tab";
-        if (b === btn) {
-          const map = {"":"active-all","Hadir":"active-hadir","Izin":"active-izin","Sakit":"active-sakit","Tidak Hadir":"active-alpha"};
-          b.classList.add(map[activeStatusFilter] || "active-all");
-        }
-      });
-      renderTable();
-    });
-
-    // ── Live search ──
-    let searchTimer;
-    document.getElementById("searchInput").addEventListener("input", () => {
-      clearTimeout(searchTimer); searchTimer = setTimeout(renderTable, 200);
-    });
-
-    // ── Date & Kelas filter change ──
-    document.getElementById("filterDate").addEventListener("change", loadData);
-    document.getElementById("filterKelas").addEventListener("change", loadData);
 
     // ── Expose functions called from onclick attributes ──
-    window.doLogin  = doLogin;
-    window.doLogout = doLogout;
-    window.loadData = loadData;
-    document.getElementById("loginBtn").addEventListener("click", doLogin);
-    document.getElementById("logoutBtn").addEventListener("click", doLogout);
-    document.getElementById("refreshBtn").addEventListener("click", loadData);
+    window.closeSuccess = closeSuccess;
+    document.getElementById("btnCloseSuccess").addEventListener("click", closeSuccess);
 
-    // ── Auto-check session ──
-    if (sessionStorage.getItem("guruAuth") === "1") {
-      document.getElementById("loginPage").style.display = "none";
-      document.getElementById("dashboardPage").classList.add("show");
-      initDashboard();
-    }
+    // ── Submit ──
+    document.getElementById("absenForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const nama    = document.getElementById("nama").value.trim();
+      const kelas   = document.getElementById("kelas").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const alasan  = document.getElementById("alasan").value.trim();
+      const jam     = new Date().toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+
+      if (!nama)    { showToast("⚠️ Nama siswa wajib diisi!", "error"); return; }
+      if (!kelas)   { showToast("⚠️ Pilih kelas terlebih dahulu!", "error"); return; }
+      if (!tanggal) { showToast("⚠️ Tanggal wajib diisi!", "error"); return; }
+      if (!selectedStatus) { showToast("⚠️ Pilih status kehadiran!", "error"); return; }
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Mengirim...';
+
+      try {
+        if (!supabase) throw new Error("Supabase belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di config.js");
+        const { error } = await supabase.from("absensi").insert([{
+          nama, kelas, tanggal, status: selectedStatus, alasan, jam
+        }]);
+
+        if (error) throw error;
+
+        document.getElementById("successMsg").textContent =
+          `Absensi ${nama} (${kelas}) berhasil dicatat sebagai ${selectedStatus}.`;
+        document.getElementById("successOverlay").classList.add("show");
+      } catch (err) {
+        console.error(err);
+        showToast("❌ Gagal menyimpan absensi: " + (err.message || "Server error"), "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Absensi';
+      }
+    });
 
   }); // end DOMContentLoaded
   </script>
