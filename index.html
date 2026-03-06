@@ -460,7 +460,7 @@
       <div class="success-icon">🎉</div>
       <h2>Absensi Terkirim!</h2>
       <p id="successMsg">Data kehadiran kamu berhasil dicatat.</p>
-      <button class="btn-close-success" onclick="closeSuccess()">Selesai</button>
+      <button class="btn-close-success" id="btnCloseSuccess">Selesai</button>
     </div>
   </div>
 
@@ -523,6 +523,10 @@
       const ny = n.getFullYear(), nm = String(n.getMonth()+1).padStart(2,"0"), nd = String(n.getDate()).padStart(2,"0");
       document.getElementById("tanggal").value = `${ny}-${nm}-${nd}`;
     }
+
+    // ── Expose functions called from onclick attributes ──
+    window.closeSuccess = closeSuccess;
+    document.getElementById("btnCloseSuccess").addEventListener("click", closeSuccess);
 
     // ── Submit ──
     document.getElementById("absenForm").addEventListener("submit", async function(e) {
