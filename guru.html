@@ -392,7 +392,7 @@
         </div>
       </div>
 
-      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      <button class="btn-login" id="loginBtn">
         <i class="fa-solid fa-right-to-bracket"></i> Masuk
       </button>
     </div>
@@ -407,7 +407,7 @@
         <h1>📊 Dashboard Absensi</h1>
         <p id="dashDateLabel">Memuat data...</p>
       </div>
-      <button class="btn-logout" onclick="doLogout()">
+      <button class="btn-logout" id="logoutBtn">
         <i class="fa-solid fa-right-from-bracket"></i> Keluar
       </button>
     </div>
@@ -480,7 +480,7 @@
         <i class="search-icon fa-solid fa-magnifying-glass"></i>
         <input type="text" id="searchInput" placeholder="Cari nama siswa..."/>
       </div>
-      <button class="btn-refresh" id="refreshBtn" onclick="loadData()">
+      <button class="btn-refresh" id="refreshBtn">
         <i class="fa-solid fa-rotate-right"></i> Refresh
       </button>
     </div>
@@ -717,6 +717,9 @@
     window.doLogin  = doLogin;
     window.doLogout = doLogout;
     window.loadData = loadData;
+    document.getElementById("loginBtn").addEventListener("click", doLogin);
+    document.getElementById("logoutBtn").addEventListener("click", doLogout);
+    document.getElementById("refreshBtn").addEventListener("click", loadData);
 
     // ── Auto-check session ──
     if (sessionStorage.getItem("guruAuth") === "1") {
