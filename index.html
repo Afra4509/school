@@ -146,7 +146,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ✅ URL Apps Script terbaru
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwgI9wo4Y0x3h8EzzrRXyIRZHCMsz_Ph-wF_k7Kax0DRMh2RPzM8C3_1QqGJ0m1n23DQ/exec";
 
     const today = new Date();
@@ -177,16 +176,24 @@
       const alasan  = document.getElementById("alasan").value.trim();
       const jam     = new Date().toLocaleTimeString("id-ID");
 
-      if (!nama || !kelas || !tanggal || !status) {
-        showToast("⚠️ Mohon lengkapi semua field wajib!", true);
-        return;
+      // ✅ Validasi ketat — hentikan jika ada yang kosong
+      if (!nama) {
+        showToast("⚠️ Nama siswa wajib diisi!", true); return;
+      }
+      if (!kelas) {
+        showToast("⚠️ Kelas wajib diisi!", true); return;
+      }
+      if (!tanggal) {
+        showToast("⚠️ Tanggal wajib diisi!", true); return;
+      }
+      if (!status) {
+        showToast("⚠️ Pilih status kehadiran terlebih dahulu!", true); return;
       }
 
       const btn = document.getElementById("submitBtn");
       btn.disabled = true;
       btn.innerHTML = '<span class="loading-spinner"></span> Mengirim...';
 
-      // ✅ Kirim via GET parameter (paling kompatibel dengan Apps Script)
       const params = new URLSearchParams({ nama, kelas, tanggal, status, alasan, jam });
       const url = APPS_SCRIPT_URL + "?" + params.toString();
 
